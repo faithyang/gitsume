@@ -1,0 +1,103 @@
+<!doctype html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="gitsume resume github programmer jobseeker davewu">
+
+<title>Gitsume! - dave5</title>
+
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+</head>
+<body>
+<div class="container">
+
+  <div id="write-info-panel" style="position:absolute;right:50px;top:100px;text-align:right;">
+    <span class="glyphicon glyphicon-info-sign" style="color:grey;font-size:40px; cursor:pointer; cursor: hand;" onclick="showDaveInfo();"></span> 
+    <div id="info" style="display:none;width:auto; background-color: grey; color:white; padding: 10px;text-align:left; margin-top: 10px;margin-right:20px;border-radius: 5px;-moz-border-radius:5px;">
+      straightdave@github <br> Mar 2014
+    </div>
+  </div>
+  
+  <h1 style="width:auto;font-family:playbill, monospace;font-size: 8em;text-align:center; margin-top:70px">Gitsume!</h1>
+  <div class="input-group" style="width:40%;margin:0 auto;">
+    <input id="github_id" type="text" class="form-control input-medium" value="Your Github ID" onfocus="if(this.value=='Your Github ID'){this.value='';}" onblur="if(this.value==''){this.value='Your Github ID';}">
+    <div class="input-group-btn">
+      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Generate <span class="caret"></span></button>
+      <ul class="dropdown-menu pull-right">
+        <li><a onclick="gen('html');">HTML</a></li>
+        <li><a onclick="gen('pdf');">PDF</a></li>
+      </ul>
+    </div>
+  </div>
+  <div id="error-msg" style="display:none; margin:20px auto; width:50%; color: white; background-color:red;border-radius: 5px;-moz-border-radius:5px; padding: 10px;"></div>
+  <div id="info-msg" style="display:none; margin:20px auto; width:80%; color: white; background-color:grey;border-radius: 5px;-moz-border-radius:5px; padding: 10px;"></div>
+  <hr>
+  
+</div>
+
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<!-- <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script> -->
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script>
+function showDaveInfo(){
+  $('#info').show().fadeOut(4000);
+}
+
+function gen(type){
+  
+  $value = $('input:text#github_id').val();
+  if($value == '' || $value == 'Your Github ID'){
+    $('div#error-msg').text('Please input your Github ID').show().fadeOut(4000);
+    return;    
+  }
+    
+  $.ajax({
+    url: "https://api.github.com/users/" + $value
+  })
+  .done(function(data){
+    var profile = data;
+    
+    $.ajax({
+      url: profile['repos_url']
+    })
+    .done(function(data){
+      var repos = data;
+      
+      var my_repos = repos.filter( function(v){
+        return !v['fork'];
+      });
+  
+      var info_div = $('div#info-msg');
+      info_div.append('<img style="width:150px;float:left" src="' + profile['avatar_url'] + '" alt="gavatar" >');
+      
+      var newdiv = $( "<div id='words' />" );
+      newdiv.css({"float":"left","margin-left":"15px"});  
+      var words = profile['name'] + '<br>' + profile['location'] + '<br>' + profile['blog'] + '<br>' + profile['email'] + '<br>' + '<br>';
+      
+      my_repos.forEach( function(s){
+        words += '<strong>' + s['name'] + '</strong>' + ' ' + s['description'] + '<br>';  
+      });
+      
+      newdiv.html(words);  
+      
+      info_div.append(newdiv);
+      info_div.append('<div style="clear:both;" />');
+      
+      info_div.show();         
+      
+    });   
+  });
+}
+
+
+
+</script>
+</body>
+</html>
