@@ -17,7 +17,7 @@ generate resume from github profile and projects
   - Description
   - Starred | Watched | Forked
 
-_output them in XML/Json_
+_not the ultimate list_
 
 ## rendering it well
 
