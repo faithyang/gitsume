@@ -23,3 +23,8 @@ _not the ultimate list_
 
 - to pdf/html
 - resume templates
+
+## To be continued
+Gitsume is not completed. It will have :
+- exporting to PDF
+- quick Web API
